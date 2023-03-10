@@ -12,7 +12,7 @@ TicTacToe/bin/x64/Debug
 
 2. Start the Server: 
 
-./TicTacToe.out Server <port> 
+./TicTacToe.out Server (port) 
 
 Ex: on csslab22.uwb.edu
     ./TcTacToe.out Server 5100
@@ -20,7 +20,7 @@ Ex: on csslab22.uwb.edu
 
 3. Start the Client 
 
-./TicTacToe.out Server <host name server is running on> <port>
+./TicTacToe.out Server (host name server is running on) (port)
 
 Ex: on csslab10.uwb.edu
     ./TicTacToe.out Server csslab22.uwb.edu 5100
