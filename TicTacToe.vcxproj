@@ -78,14 +78,23 @@
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="Socket.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ByteBuffer.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="CommandType.h" />
-    <ClInclude Include="GameBoard.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameOutcome.h" />
     <ClInclude Include="Server.h" />
+    <ClInclude Include="Socket.h" />
+    <ClInclude Include="SocketException.h" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <LibraryDependencies>pthread</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

@@ -7,30 +7,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "Socket.h"
 #include "Server.h"
 #include "Client.h"
-#include "GameBoard.h"
 
 //helps user start the program - correct format 
 void displayHelp() {
-	cerr << "Usage: TicTacToe Server <Server-Port>" << endl;
-	cerr << "                 Client <Server-Address> <Server-Port>" << endl;
+	std::cerr << "Usage: TicTacToe Server <Server-Port>" << std::endl;
+	std::cerr << "                 Client <Server-Address> <Server-Port>" << std::endl;
 	exit(1);
-}
-
-//prompts user to enter username 
-void promptuser() {
-	cout << "Welcome to Tic-Tac-Toe\n";
-	cout << "to begin, enter a username\n";
-	cout << "Username: ";
-	string username;
-	cin >> username;
-
-	//call process request to see if user would liek to 
-	//1. start a new game 
-	//2. get a list of waiting games
-	//3. join an existing game 
-	
 }
 
 int main(int argc, char* argv[]) {
@@ -52,11 +37,10 @@ int main(int argc, char* argv[]) {
 		if (serverPort > 0) {
 			Client client;
 			client.connect(argv[2], serverPort);
+			client.run();
 		}
 	}
 
 	displayHelp();
-
-	promptuser();
-
+;
 }
