@@ -1,5 +1,14 @@
 #pragma once
 
+/*
+* Sarah Asad
+* Term Project: Tic-Tac-Toe
+* Socket.h
+*
+* This file contains all the method definitiosn for Socket.cpp. It handles all the sends and recieve communication by the 
+* socket from the client and the server. 
+*/
+
 #include "SocketException.h"
 #include "ByteBuffer.h"
 #include "Game.h"
@@ -11,11 +20,11 @@ protected:
 	int sd;
 
 public:
-
+	//constructor 
 	Socket(int sd = -1) {
 		this->sd = sd;
 	}
-
+	//desctructoe = closes the socket 
 	~Socket() {
 		if (this->sd != -1) {
 			close(this->sd);
@@ -23,6 +32,7 @@ public:
 		}
 	}
 
+	//helper method for testing - checking socket value 
 	int getSd() {
 		return this->sd;
 	}

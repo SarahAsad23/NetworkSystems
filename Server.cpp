@@ -1,3 +1,17 @@
+#pragma once
+
+/*
+* Sarah Asad
+* Term Project: Tic-Tac-Toe
+* Server.cpp
+*
+* The server is built using a TCP socket and multithreading allowing multiple games to be played at once. the server
+* socket connection is set up where it then listens for incoming connection. The server also stores all of the player 
+* information (player ID, username), game information (gameID, game board), which players turn it is, and the outcome 
+* of the game. 
+*/
+
+
 #include <cstdio>
 #include <iostream>
 #include <memory>
@@ -55,8 +69,6 @@ void Server::Start(int port) {
         throw new SocketException("Unablle to listen", err);
     }
 
-    //client socket 
-
     std::cout << "Server ready and accepting connections\n";
 
     //keep accepting connections until forceful quit 
@@ -80,6 +92,7 @@ void Server::Start(int port) {
     }
 }
 
+//register a user
 void Server::registerUser(std::shared_ptr<ClientContext> context) {
 
     // Get the name of the user.
@@ -101,21 +114,28 @@ void Server::registerUser(std::shared_ptr<ClientContext> context) {
     context->client.sendInt(user->id);
 }
 
+//start a new game
 void Server::startNewGame(std::shared_ptr<ClientContext> context) {
     std::shared_ptr<User> user = this->users.at(context->userId);
     std::shared_ptr<Game> game = std::make_shared<Game>(this->nextGameId++, user->id, user->name);
+    //insert into waiting games map 
     this->waitingGames.insert({ game->id, game });
     std::cout << "Created Game " << game->id << " for user " << user->id << std::endl;
+    //send the game to the client 
     context->client.sendGame(game);
 }
 
+//get all the waiting games 
 void Server::getWaitingGames(std::shared_ptr<ClientContext> context) {
+    //send client the sise of map of waiting games 
     context->client.sendInt(this->waitingGames.size());
     for (auto game : this->waitingGames) {
+        //send the game
         context->client.sendGame(game.second);
     }
 }
 
+//join a game
 void Server::joinGame(std::shared_ptr<ClientContext> context) {
     int id = context->client.readInt();
 
@@ -133,30 +153,42 @@ void Server::joinGame(std::shared_ptr<ClientContext> context) {
     // Now add the game to the active list.
     this->activeGames.insert({ id, game });
 
+    //send the game
     context->client.sendGame(game);
 }
 
+//see if the game has started 
 void Server::isGameStarted(std::shared_ptr<ClientContext> context) {
     int gameId = context->client.readInt();
     int result = (this->activeGames.find(gameId) != this->activeGames.end());
     context->client.sendInt(result);
 }
 
+//check to see whos turn it is 
 void Server::isMyTurn(std::shared_ptr<ClientContext> context) {
+    //get the game ID
     int gameId = context->client.readInt();
+    //see if it is in the active games map 
     auto game = this->activeGames.find(gameId);
+    //send whos turn it is - send user ID
     int result = game->second->turnOfUser == context->userId;
+    //check to see if someone has won or tie 
     int outcome = checkOutcome(game->second);
 
+    //check to see who won 
     if (outcome == GameOutcome::User1Win || outcome == GameOutcome::User2Win) {
         outcome = context->userId == game->second->winnerId ? GameOutcome::YouWin : GameOutcome::YouLose;
     }
 
+    //send the outcome 
     context->client.sendInt(outcome);
+    //send the result 
     context->client.sendInt(result);
+    //send the game 
     context->client.sendGame(game->second);
 }
 
+//helper method to see if there is a win or tie 
 bool Server::didWin(std::shared_ptr<Game> game, int userId) {
     // Check rows.
     for (int i = 0; i < 3; i++) {
@@ -172,7 +204,7 @@ bool Server::didWin(std::shared_ptr<Game> game, int userId) {
         }
     }
 
-    //check diagonal 
+    //check diagonals
     if (game->board[0][0] == userId && game->board[1][1] == userId && game->board[2][2] == userId) {
         return true;
     }
@@ -184,11 +216,14 @@ bool Server::didWin(std::shared_ptr<Game> game, int userId) {
     return false;
 }
 
+//check the outcome of the game 
 GameOutcome Server::checkOutcome(std::shared_ptr<Game> game) {
+    //use 1 won 
     if (didWin(game, game->user1)) {
         game->winnerId = game->user1;
         return GameOutcome::User1Win;
     }
+    //user2 won 
     else if (didWin(game, game->user2)) {
         game->winnerId = game->user2;
         return GameOutcome::User2Win;
@@ -207,6 +242,7 @@ GameOutcome Server::checkOutcome(std::shared_ptr<Game> game) {
     return emptyBoxes == 0 ? GameOutcome::Tie : GameOutcome::Continue;
 }
 
+//see whos turn it is to play 
 void Server::playTurn(std::shared_ptr<ClientContext> context) {
     int id = context->client.readInt();
     auto game = this->activeGames.at(id);
@@ -250,7 +286,7 @@ void Server::playTurn(std::shared_ptr<ClientContext> context) {
     return;
 }
 
-
+//used to see what the client would like to do 
 int Server::processClient(std::shared_ptr<ClientContext> context)
 {
     std::cout << "Processing request for client using thread " << context->client.getSd() << std::endl;
@@ -298,6 +334,7 @@ int Server::processClient(std::shared_ptr<ClientContext> context)
     }
 }
 
+//multithreading used by server so that multiple games can be played at once 
 void* Server::threadProc(void* arg) {
     std::shared_ptr<ClientContext> context((ClientContext*)arg);
     context->server->processClient(context);

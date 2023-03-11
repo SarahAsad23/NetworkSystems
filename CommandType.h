@@ -1,5 +1,13 @@
+#pragma once
 
-//used to see what the user would like to do 
+/*
+* Sarah Asad
+* Term Project: Tic-Tac-Toe
+* CommandTypes.h
+*
+* Used to see what the user would like to do when the program is started  
+*/
+
 enum CommandType {
 	RegisterUser = 100,
 	GetWaitingGames = 1,
