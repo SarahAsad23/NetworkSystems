@@ -5,11 +5,11 @@
 * Term Project: Tic-Tac-Toe
 * Cleint.cpp 
 * 
-* The Client is built using TCP socket and connects to the server on the specified port. the client then promts the user to register. the user 
-* then has the option to either get a list of existing/waiting games and from there they can join an waiting game. or the user can start a new 
-* game. if the user joins a waiting game then the game is instatnly startes. if the user creates a new game then they need to wait untilk a seocnd 
-* user joins for the game to start. from there each player takes turns marking their corresponding symbol in their desired box. after each turn 
-* the slient asks the server for the game outcome to see if either a player has won, if there is a tie, or if the game should contine. Each user 
+* The Client is built using TCP socket and connects to the server on the specified port. The client then promts the user to register. The user 
+* then has the option to either get a list of existing/waiting games and from there they can join a waiting game - or the user can start a new 
+* game. if the user joins a waiting game then the game is instatnly starts. if the user creates a new game then they need to wait until a seocnd 
+* user joins for the game to start. From there each player takes turns marking their corresponding symbol in their desired box. After each turn 
+* the client asks the server for the game outcome to see if either a player has won, if there is a tie, or if the game should contine. Each user 
 * continues to take turns until there is a win or a tie. After the game is over, the outcome of the game is printed out and the user if prompted
 * to enter 0 to unregister and exit the game. 
 *
